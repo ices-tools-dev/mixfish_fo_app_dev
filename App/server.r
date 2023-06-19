@@ -50,19 +50,7 @@ server <- function(input, output, session) {
     ggplotly(plot_catchScenStk(data = res_mod()))
   })
 
-  #### fdi landings map
-  # lutPal <- rbind(
-  #   data.frame(pal = "spectral", fun = "brewer.spectral"),
-  #   data.frame(pal = "paired", fun = "brewer.paired"),
-  #   data.frame(pal = "cols25", fun = "cols25"),
-  #   data.frame(pal = "set1", fun = "brewer.set1"),
-  #   data.frame(pal = "set2", fun = "brewer.set2"),
-  #   data.frame(pal = "set3", fun = "brewer.set3"),
-  #   data.frame(pal = "alphabet", fun = "alphabet"),
-  #   data.frame(pal = "alphabet2", fun = "alphabet2"),
-  #   data.frame(pal = "polychrome", fun = "polychrome"),
-  #   data.frame(pal = "glasbey", fun = "glasbey")
-  # )
+
 
   data_reactive_landings <- reactive({
     req(input$selected_locations)

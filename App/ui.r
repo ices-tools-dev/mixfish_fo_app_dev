@@ -153,15 +153,6 @@ tagList(
         ),
 
 
-        # style = "max-height: 90vh; overflow-y: auto; overflow-x: hidden; !important;",
-        # sidebarLayout(
-        #     sidebarPanel = stock_selection_left_side(),
-        #     mainPanel = stock_selection_right_side()
-
-        # )
-
-
-        ########################################## New version of SAG plots ############################
         tabPanel(
             "FO"
             
@@ -223,50 +214,12 @@ tagList(
                tags$style(type = "text/css", "#effort {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
                         plotlyOutput("effort_plot", height = "100%", width = "100%"))
              )
-            # style = "overflow-y: auto; overflow-x: hidden;",
-            # splitLayout(
-            #     cellWidths = c("40%", "60%"),
-            #     header_left_panel_stock_info("stock_infos2"),
-            #     header_right_panel_headline("Advice_Headline2")
-            # ),
-            # quality_of_assessment_fluid()
+            
         ),
 
         ######################################################################################################
 
-        # tabPanel(
-        #     "Catch scenarios",
-        #     style = " max-height: 90vh; overflow-y: auto; overflow-x: hidden; !important;",
-        #     splitLayout(
-        #         cellWidths = c("40%", "60%"),
-        #         header_left_panel_stock_info("stock_infos3"),
-        #         header_right_panel_headline("Advice_Headline3")
-        #     ),
-        #     sidebarLayout(
-        #         sidebarPanel = catch_scenarios_left_panel(),
-        #         mainPanel = catch_scenarios_right_panel()
-        #     )
-
-        # ),
-        # navbarMenu(
-        #         "Resources",
-        #         tabPanel(
-        #             "Contact & feedback",
-        #             htmlOutput("contact_feedback")
-        #         ),
-        #         tabPanel(
-        #             "Data sources",
-        #             htmlOutput("data_sources")
-        #         ),
-        #         tabPanel(
-        #             "Data disclaimer & policy",
-        #             htmlOutput("data_disclaimer_policy")
-        #         ),
-        #         tabPanel(
-        #             "Citation",
-        #             htmlOutput("citation")
-        #         )
-        #     )
+        
     )
 )
 
