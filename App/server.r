@@ -24,7 +24,10 @@ server <- function(input, output, session) {
     updateNavbarPage(session, "tabset", selected = "FO")
   })
   observeEvent(input$web_button2, {
-    updateNavbarPage(session, "tabset", selected = "MixFish")
+    updateNavbarPage(session, "tabset", selected = "MixFishConsiderations")
+  })
+  observeEvent(input$web_button3, {
+    updateNavbarPage(session, "tabset", selected = "MixFishAdvice")
   })
 
 

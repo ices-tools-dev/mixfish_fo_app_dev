@@ -139,7 +139,7 @@ tagList(
                         ), br(),
                         br(),
                         tags$button(
-                            id = "web_button2",
+                            id = "web_button3",
                             class = "btn action-button",
                             align = "center",
                             tags$img(
@@ -164,21 +164,14 @@ tagList(
         ########################################## New version of SAG plots ############################
         tabPanel(
             "FO"
-            # style = "max-height: 90vh; overflow-y: auto; overflow-x: hidden; !important;",
-            # splitLayout(
-            #     cellWidths = c("40%", "60%"),
-            #     header_left_panel_stock_info("stock_infos1"),
-            #     header_right_panel_headline("Advice_Headline1")
-            # ),
-            # sidebarPanel(
-            #  width = 12,
-            # SAG_plots_1_2_fluid(),
-            # br(),
-            # SAG_plots_3_4_fluid()
-            # )
+            
         ),
         tabPanel(
-            "MixFish",
+            "MixFishConsiderations"
+            
+        ),
+        tabPanel(
+            "MixFishAdvice",
             tabsetPanel(
                tabPanel("Headline",
                         selectizeGroupUI(
