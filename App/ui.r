@@ -60,27 +60,12 @@ source("utilities_ecoregion_mapping.r")
 source("imageDimnames.r")
 source("plotCor.r")
 source("mesh_size_extractor.r")
-# source("utilities_load_shapefiles.r")
-# source("utilities_plotting.r")
-# source("utilities_mapping.r")
-# source("utilities_sag_data.r")
-# source("utilities_catch_scenarios.r")
-# source("utilities_shiny_formatting.r")
-# source("utilities_calendar.r")
-# source("utilities_resources.r")
+
 
 # Load data
 
 # load("Data/fdi_ecoregion/Greater North Sea_data.Rdata")
-# # extract mesh size ranges
-# mesh_size_split <- strsplit(data$mesh_size_range, "D")
-# mesh_sizes <- suppressWarnings(as.numeric(do.call("c", mesh_size_split)))
-# mesh_size_range <- range(unique(mesh_sizes), na.rm = TRUE)
-# mesh_size_split <- lapply(mesh_size_split, FUN = function(x){if(length(x)<2){c(mesh_size_range)}else{x}})
-# mesh_size_split <- lapply(mesh_size_split, FUN = function(x){if(x[2]=="XX"){c(x[1], mesh_size_range[2])}else{x}})
-# data$mesh_size_min <- as.numeric(unlist(lapply(mesh_size_split, FUN = function(x){x[1]})))
-# data$mesh_size_max <- as.numeric(unlist(lapply(mesh_size_split, FUN = function(x){x[2]})))
-  
+
 
 
 title_html <- tags$a(
@@ -95,19 +80,9 @@ tagList(
     useShinyjs(),
     introjsUI(),
     tags$script(src = "https://kit.fontawesome.com/ac71e9cf8e.js"),
-    # tags$head(includeHTML(("google-analytics.html"))),
+    
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")),
-    #     tags$script(                                                                        #####we can modify this to have the tabs inactive until a stock is chosen
-    #     '
-    #     var tab = $(\'a[data-value="Stock Selection"]\').parent().addClass("disabled");
-    #     $(function(){
-    #       $(tab.parent()).on("click", "li.disabled", function(e) {
-    #         e.preventDefault();
-    #         return false;
-    #       });
-    #     });
-    #     '
-    #   ),
+
 
 
 
@@ -147,8 +122,8 @@ tagList(
                             class = "btn action-button",
                             align = "center",
                             tags$img(
-                                src = "FO.png",
-                                height = "300px"
+                                src = "FishO.png",
+                                height = "200px"
                             )
                         ),
                         br(),
@@ -158,8 +133,18 @@ tagList(
                             class = "btn action-button",
                             align = "center",
                             tags$img(
-                                src = "mixfish.png",
-                                height = "300px"
+                                src = "mixfishcons.png",
+                                height = "200px"
+                            )
+                        ), br(),
+                        br(),
+                        tags$button(
+                            id = "web_button2",
+                            class = "btn action-button",
+                            align = "center",
+                            tags$img(
+                                src = "miffishadv.png",
+                                height = "200px"
                             )
                         )
                     )
