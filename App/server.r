@@ -12,7 +12,7 @@
 
 allEco <- fread("Data/fdi_ecoregion/all_ecoregions.csv")
 
-
+source("plot_fleet_stock_effort.R")
 
 ############# Start server function ################
 
@@ -126,8 +126,20 @@ server <- function(input, output, session) {
     )
   )
 
-
-#   data_effort_reactive <- reactive({
+  data_effort_reactive <- reactive({
+    
+    fleet_stock_sum <- read.table("Data/stfFltStkSum.csv")
+    fleet_sum <- read.table("Data/stfFltSum.csv")
+    
+    list(fleet_stock_sum = fleet_stock_sum, 
+         fleet_sum = fleet_sum)
+  })
+  
+output$fleet_stock_effort_plot <- renderPlotly({
+  plot_fleet_stock_effort(df = data_effort_reactive()$fleet_stock_sum, 
+                                                          eff = data_effort_reactive()$fleet_sum)
+})
+  #   data_effort_reactive <- reactive({
 #     stfFltStkSum <- read.table("Data/stfFltStkSum.csv")
 #     stfFltSum <- read.table("Data/stfFltSum.csv")
 #     advYr <- 2022 # advice year
