@@ -60,12 +60,16 @@ source("utilities_ecoregion_mapping.r")
 source("imageDimnames.r")
 source("plotCor.r")
 source("mesh_size_extractor.r")
+source("plot_map_species.r")
+source("plot_map_gear_type.r")
+source("plot_corr_gear_type.r")
+source("plot_corr_species.r")
 
 
 # Load data
 
 # load("Data/fdi_ecoregion/Greater North Sea_data.Rdata")
-
+data <- fread("Data/fdi_ecoregion/all_ecoregions.csv")
 
 
 title_html <- tags$a(
@@ -80,13 +84,7 @@ tagList(
     useShinyjs(),
     introjsUI(),
     tags$script(src = "https://kit.fontawesome.com/ac71e9cf8e.js"),
-    
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")),
-
-
-
-
-
     navbarPage(
         position = "static-top",
         collapsible = TRUE,
@@ -101,18 +99,18 @@ tagList(
             sidebarLayout(
                 sidebarPanel(
                     width = 7,
-                    leafletOutput("map_ecoregion"), 
+                    leafletOutput("map_ecoregion"),
                     selectizeInput(
-                            inputId = "selected_locations",
-                            label = "ICES Ecoregions",
-                            choices = sort(shape_eco$Ecoregion),
-                            selected = "Greater North Sea",
-                            multiple = FALSE,
-                            width = "100%",
-                            options = list(
+                        inputId = "selected_locations",
+                        label = "ICES Ecoregions",
+                        choices = sort(shape_eco$Ecoregion),
+                        selected = "Greater North Sea",
+                        multiple = FALSE,
+                        width = "100%",
+                        options = list(
                             placeholder = "Select Ecoregion(s)"
-                            )
                         )
+                    )
                 ),
                 mainPanel(
                     width = 5,
@@ -151,78 +149,115 @@ tagList(
                 )
             )
         ),
-
-
         tabPanel(
             "FO"
-            
         ),
         tabPanel(
             "MixFishConsiderations"
-            
         ),
         tabPanel(
             "MixFishAdvice",
             tabsetPanel(
-               tabPanel("Headline",
-                        selectizeGroupUI(
-                                id = "my-filters",
-                                params = list(
-                                    scenario = list(inputId = "scenario", title = "scenario:"),
-                                    stock = list(inputId = "stock", title = "stock:")
-                                    # indicator = list(inputId = "indicator", title = "indicator:")
-                                ),
-                                inline = TRUE
+                tabPanel(
+                    "Headline",
+                    selectizeGroupUI(
+                        id = "my-filters",
+                        params = list(
+                            scenario = list(inputId = "scenario", title = "scenario:"),
+                            stock = list(inputId = "stock", title = "stock:")
+                            # indicator = list(inputId = "indicator", title = "indicator:")
+                        ),
+                        inline = TRUE
+                    ),
+                    tags$style(type = "text/css", "#headline_bars {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
+                    plotlyOutput("headline_bars", height = "100%", width = "100%")
+                ),
+                tabPanel(
+                    "Spatial landings",
+                    sidebarLayout(
+                        sidebarPanel(
+                            width = 3,
+                            
+                            sliderInput(
+                                inputId = "year_range",
+                                label = "Year range:",
+                                step = 1,
+                                sep = "",
+                                min = 2013,
+                                max = 2021,
+                                value = c(2018, 2021)
                             ),
-                        tags$style(type = "text/css", "#headline_bars {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
-                        plotlyOutput("headline_bars", height = "100%", width = "100%")
-               ),
-               tabPanel("Spatial landings",
-                        sidebarLayout(
-                            sidebarPanel(
-                                width = 3,
-                                # selectizeInput(inputId = "gear_type", 
-                                #             label = "Gear type:",
-                                #             selected = c("OTB", "OTM"),
-                                #             choices = c("OTB", "OTM"),
-                                #             multiple = TRUE),
-                                # selectizeInput(inputId = "species", 
-                                #             label = "Species:", 
-                                #             selected = c("COD", "HAD", "POK", "WHG"),
-                                #             choices = c("COD", "HAD", "POK", "WHG"),
-                                #             multiple = TRUE)
-                            selectizeGroupUI(
-                                id = "fdi_filters",
-                                params = list(
-                                    species = list(inputId = "species", title = "Species:"),
-                                    gear_type = list(inputId = "gear_type", title = "Gear type:"),
-                                    ecoregion = list(inputId = "ecoregion", title = "ecoregion:")
+                            selectInput(
+                                inputId = "vessel_length", label = "Vessel Length:",
+                                selected = c("VL1218", "VL1824"),
+                                choices = list(
+                                    "0-12m" = "VL0010",
+                                    "10-12m" = "VL1012",
+                                    "12-18m" = "VL1218",
+                                    "18-24m" = "VL1824",
+                                    "24-40m" = "VL2440",
+                                    "40m+" = "VL40XX",
+                                    "Not known" = "NK"
                                 ),
-                                inline = TRUE
-                            )
+                                multiple = TRUE
                             ),
-                            mainPanel(
-                                width = 9,
-                                fluidRow(
+                            selectInput(
+                                inputId = "gear_type", label = "Gear type:",
+                                selected = c("OTB", "OTM"),
+                                choices = sort(unique(data$gear_type)),
+                                multiple = TRUE
+                            ),
+                            sliderInput("mesh_range", "Mesh range [mm]:",
+                                step = 10, sep = "",
+                                min = 0, max = 250,
+                                value = c(0, 250)
+                            ),
+                            selectInput(
+                                inputId = "species", label = "Species:",
+                                selected = c("COD", "HAD", "POK", "WHG"),
+                                choices = sort(unique(data$species)),
+                                multiple = TRUE
+                            ),
+                            selectInput(
+                                inputId = "pal", label = "Palette:",
+                                selected = "spectral",
+                                choices = c("spectral", "paired", "cols25", "set1", "set2", "set3"),
+                                multiple = FALSE
+                            ),
+                            checkboxInput(inputId = "sc", label = "Scaled landings", value = TRUE),
+                            actionButton(inputId = "filter_data", label = "Filter", width = "100%")
+                            # selectizeGroupUI(
+                            #     id = "fdi_filters",
+                            #     params = list(
+                            #         species = list(inputId = "species", title = "Species:"),
+                            #         gear_type = list(inputId = "gear_type", title = "Gear type:"),
+                            #         ecoregion = list(inputId = "ecoregion", title = "ecoregion:")
+                            #     ),
+                            #     inline = TRUE
+                            # )
+                        ),
+                        mainPanel(
+                            width = 9,
+                            htmlOutput("text"),
+                            fluidRow(
                                     column(5, plotOutput("map_species", width = "100%", height = 600)),
                                     column(5, plotOutput("map_gear_type", width = "100%", height = 600))
+                                ),
+                            fluidRow(
+                                    column(5, plotOutput("corr_species", width = "100%", height = 400)),
+                                    column(5, plotOutput("corr_gear_type", width = "100%", height = 400))
                                 )
-                            )
-                            )
-               ),
-               tabPanel("effort",
-               tags$style(type = "text/css", "#effort {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
-                        plotlyOutput("effort_plot", height = "100%", width = "100%"))
-             )
-            
+                        )
+                    )
+                ),
+                tabPanel(
+                    "effort",
+                    tags$style(type = "text/css", "#effort {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
+                    plotlyOutput("effort_plot", height = "100%", width = "100%")
+                )
+            )
         ),
 
         ######################################################################################################
-
-        
     )
 )
-
-
-
-
