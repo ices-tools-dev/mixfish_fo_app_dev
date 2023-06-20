@@ -240,12 +240,12 @@ tagList(
                             width = 9,
                             htmlOutput("text"),
                             fluidRow(
-                                    column(5, plotOutput("map_species", width = "100%", height = 600)),
-                                    column(5, plotOutput("map_gear_type", width = "100%", height = 600))
+                                    column(5, withSpinner(plotOutput("map_species", width = "100%", height = 600), type = 1, color = "#0275D8")),
+                                    column(5, withSpinner(plotOutput("map_gear_type", width = "100%", height = 600), type = 1, color = "#0275D8"))
                                 ),
                             fluidRow(
-                                    column(5, plotOutput("corr_species", width = "100%", height = 400)),
-                                    column(5, plotOutput("corr_gear_type", width = "100%", height = 400))
+                                    column(5, withSpinner(plotOutput("corr_species", width = "100%", height = 400), type = 1, color = "#0275D8")),
+                                    column(5, withSpinner(plotOutput("corr_gear_type", width = "100%", height = 400), type = 1, color = "#0275D8"))
                                 )
                         )
                     )

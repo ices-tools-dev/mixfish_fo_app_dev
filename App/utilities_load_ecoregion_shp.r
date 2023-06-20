@@ -46,7 +46,7 @@ load_shape_europe <- function(){
 load_shape_ecoregions <- function(){
     shape_eco <- st_read(dsn = "Data/shape_eco_simplified", 
         layer = "shape_eco_simplified")
-
+    
     # Change one Ecoregion name (this comes handy when we filter the stock list table)
 
     shape_eco <- dplyr::filter(shape_eco, !Ecoregion %in% c("Western Mediterranean Sea", "Ionian Sea and the Central Mediterranean Sea", "Adriatic Sea", "Black Sea", "Aegean-Levantine Sea"))

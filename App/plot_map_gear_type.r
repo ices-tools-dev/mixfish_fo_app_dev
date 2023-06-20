@@ -1,10 +1,12 @@
-plot_map_gear_type <- function(filtered_data_gear_type, input_sc) {
+plot_map_gear_type <- function(filtered_data_gear_type, input_sc, ecoregion) {
     
     data2 <- filtered_data_gear_type
 
     op <- par(cex = 1.5, mar = c(2, 2, 1, 1))
+    mapLimits <- st_bbox(shape_eco[shape_eco$Ecoregion == ecoregion,])
+
     plot(1,
-        xlim = c(-6, 15), ylim = c(51, 62),
+        xlim = c(mapLimits$xmin, mapLimits$xmax), ylim = c(mapLimits$ymin, mapLimits$ymax),
         t = "n", asp = 2, xlab = "", ylab = ""
     )
     # map("world", xlim = range(agg$lon), ylim = range(agg$lat))

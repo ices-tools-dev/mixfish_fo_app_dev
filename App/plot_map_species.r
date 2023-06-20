@@ -1,11 +1,12 @@
-plot_map_species <- function(filtered_data, input_sc){
+plot_map_species <- function(filtered_data, input_sc, ecoregion){
 
 op <- par(cex = 1.5, mar = c(2,2,1,1))
 
     data2 <- filtered_data
     
     op <- par(cex = 1.5)
-    plot(1, xlim = c(-6,15), ylim = c(51,62), 
+    mapLimits <- st_bbox(shape_eco[shape_eco$Ecoregion == ecoregion,])
+    plot(1, xlim = c(mapLimits$xmin, mapLimits$xmax), ylim = c(mapLimits$ymin, mapLimits$ymax), 
       t = "n", asp = 2, xlab = "", ylab = "")
     # map("world", xlim = range(agg$lon), ylim = range(agg$lat))
     urect <- unique(data2$icesname)

@@ -90,8 +90,25 @@ server <- function(input, output, session) {
       mesh_size_max <= input$mesh_range[2] &
       year >= input$year_range[1] &
       year <= input$year_range[2])
-    # agg
+    
   })
+
+  # updateSelectInput(
+  #                               inputId = "species", 
+  #                               label = "Species:",
+  #                               selected = NULL,
+  #                               choices = sort(unique(filtered_data()$species))
+                               
+  #                           )
+
+  # updateSelectInput(
+  #                               inputId = "gear_type", 
+  #                               label = "Gear type:",
+  #                               selected = NULL,
+  #                               choices = sort(unique(filtered_data()$gear_type))
+                                
+  #                           )
+  
   # species aggregation ----
   filtered_data_species <- reactive({
     
@@ -141,8 +158,8 @@ server <- function(input, output, session) {
     agg$sc <- sqrt(agg$sumLandings/max(agg$sumLandings, na.rm = T))
     agg <- cbind(agg, ices.rect(rectangle = agg$icesname))
     agg$col <- lutCol$col[match(agg$gear_type, lutCol$gear_type)]
-
     agg
+    
   })
 
   output$text <- renderUI({
@@ -155,144 +172,24 @@ server <- function(input, output, session) {
 
 
 
-
-
-
-## PLOTS ----  
-  # map species ----
-  # plot_map_species <- reactive({
-
-  #   op <- par(cex = 1.5, mar = c(2,2,1,1))
-
-  #   data2 <- filtered_data_species()
-    
-  #   op <- par(cex = 1.5)
-  #   plot(1, xlim = c(-6,15), ylim = c(51,62), 
-  #     t = "n", asp = 2, xlab = "", ylab = "")
-  #   # map("world", xlim = range(agg$lon), ylim = range(agg$lat))
-  #   urect <- unique(data2$icesname)
-  #   for(i in seq(urect)){
-  #     aggsub <- subset(data2, icesname == urect[i])
-  #     sc <- ifelse(input$sc, 1, aggsub$sc[1])
-
-  #     excl <- which(aggsub$percLandings==0)
-  #     if(length(excl)>0) aggsub <- aggsub[-which(aggsub$percLandings==0)]
-  #     barplot2D(z = aggsub$percLandings, x = aggsub$lon[1], y = aggsub$lat[1],
-  #       width = 1*sc, height = 0.5*sc,
-  #       colour = aggsub$col, border = NA,
-  #       lwd.frame = 0.25, col.frame = "black")
-  #   }
-  #   map("world", add = T, fill = T, col = 8, boundary = 1)
-  #   box()
-  #   uSppCol <- unique(data2[,c("species", "col")])
-  #   uSppCol <- uSppCol[order(uSppCol$species),]
-  #   legend("topright", legend = uSppCol$species, col = uSppCol$col, fill = uSppCol$col)
-  #   par(op)
-
-  #   # recordPlot()
-    
-  # })
-  
-  # map gear type ----
-  # plot_map_gear_type <- reactive({
-    
-
-  #   # data2 <- filtered_data_gear_type()
-    
-  #   # op <- par(cex = 1.5, mar = c(2,2,1,1))
-  #   # plot(1, xlim = c(-6,15), ylim = c(51,62), 
-  #   #   t = "n", asp = 2, xlab = "", ylab = "")
-  #   # # map("world", xlim = range(agg$lon), ylim = range(agg$lat))
-  #   # urect <- unique(data2$icesname)
-  #   # for(i in seq(urect)){
-  #   #   aggsub <- subset(data2, icesname == urect[i])
-  #   #   sc <- ifelse(input$sc, 1, aggsub$sc[1])
-
-  #   #   excl <- which(aggsub$percLandings==0)
-  #   #   if(length(excl)>0) aggsub <- aggsub[-which(aggsub$percLandings==0)]
-  #   #   barplot2D(z = aggsub$percLandings, x = aggsub$lon[1], y = aggsub$lat[1],
-  #   #     width = 1*sc, height = 0.5*sc,
-  #   #     colour = aggsub$col, border = NA,
-  #   #     lwd.frame = 0.25, col.frame = "black")
-  #   # }
-  #   # map("world", add = T, fill = T, col = 8, boundary = 1)
-  #   # box()
-  #   # uGearCol <- unique(data2[,c("gear_type", "col")])
-  #   # uGearCol <- uGearCol[order(uGearCol$gear_type),]
-  #   # legend("topright", legend = uGearCol$gear_type, col = uSppCol$col, fill = uGearCol$col)
-  #   # par(op)
-
-  #   # recordPlot()
-    
-  # })
-  
-  # correlation species ----
-  # plot_corr_species <- reactive({
-   
-  #   data2 <- filtered_data_species()
-  #   data3 <- dcast(data = data2, formula = icesname ~ species, 
-  #     value.var = "landings", fun.aggregate = sum, na.rm = TRUE)
-  #   rownames(data3) <- data3$icesname
-  #   data3 <- data3[,-1]
-  #   # corrTab <- cor(as.matrix(data3[,-1]))
-    
-  #   op <- par(cex = 1.5, mar = c(1,1,1,1))
-  #   # imageDimnames(round(corrTab,2), col = colorRampPalette(c(2,"white", 4))(21), zlim = c(-1,1))
-  #   # plotCor(data3, log = FALSE)
-  #   mat <- round(cor(data3, use = "pairwise.complete.obs", method = "pearson"), 2)
-  #   imageCor(mat)
-    
-  #   par(op)
-    
-  #   # recordPlot()
-    
-  # })
-  
-  # correlation gear type ----
-  # plot_corr_gear_type <- reactive({
-   
-  #   data2 <- filtered_data_gear_type()
-  #   data3 <- dcast(data = data2, formula = icesname ~ gear_type, 
-  #     value.var = "landings", fun.aggregate = sum, na.rm = TRUE)
-  #   rownames(data3) <- data3$icesname
-  #   data3 <- data3[,-1]
-  #   # corrTab <- cor(as.matrix(data3[,-1]))
-    
-  #   op <- par(cex = 1.5, mar = c(1,1,1,1))
-  #   # imageDimnames(round(corrTab,2), col = colorRampPalette(c(2,"white", 4))(21), zlim = c(-1,1))
-  #   # plotCor(data3, log = FALSE)
-  #   mat <- round(cor(data3, use = "pairwise.complete.obs", method = "pearson"), 2)
-  #   imageCor(mat)
-  #   par(op)
-    
-  #   # recordPlot()
-    
-  # })
-
-
-
-
-
-
-
   # Render map(s)
   output$map_species <- renderPlot({
-    withSpinner(plot_map_species(filtered_data_species(), input$sc))
-    # plot_map()
+    plot_map_species(filtered_data_species(), input$sc, input$selected_locations)
+    
   })
   
   output$map_gear_type <- renderPlot({
-    withSpinner(plot_map_gear_type(filtered_data_gear_type(), input$sc))
-    # plot_map()
+    plot_map_gear_type(filtered_data_gear_type(), input$sc, input$selected_locations)
+    
   })
   
   # Render corr plot
   output$corr_species <- renderPlot({
-    withSpinner(plot_corr_species(filtered_data_species()))
+    plot_corr_species(filtered_data_species())
   })
   
   output$corr_gear_type <- renderPlot({
-    withSpinner(plot_corr_gear_type(filtered_data_gear_type()))
+    plot_corr_gear_type(filtered_data_gear_type())
   })
 })
 
