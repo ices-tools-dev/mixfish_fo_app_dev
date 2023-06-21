@@ -242,8 +242,14 @@ tagList(
                             )
                ),
                tabPanel("effort",
-               tags$style(type = "text/css", "#effort {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
-                        plotlyOutput("fleet_stock_effort_plot", height = "100%", width = "100%"))
+                  sidebarLayout(
+                    sidebarPanel = sidebarPanel(),
+                    mainPanel = mainPanel(column(width = 9,
+                      
+               tags$style(type = "text/css", "#fleet_stock_effort_plot {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
+                        plotlyOutput("fleet_stock_effort_plot", height = "auto", width = "auto"))
+                                                 )
+                    ))
              )
             # style = "overflow-y: auto; overflow-x: hidden;",
             # splitLayout(
