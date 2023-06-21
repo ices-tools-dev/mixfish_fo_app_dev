@@ -206,7 +206,7 @@ tagList(
                                 inline = TRUE
                             ),
                         tags$style(type = "text/css", "#headline_bars {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
-                        plotlyOutput("headline_bars", height = "100%", width = "100%")
+                        plotOutput("headline_bars", height = "100%", width = "100%")
                ),
                tabPanel("Spatial landings",
                         sidebarLayout(

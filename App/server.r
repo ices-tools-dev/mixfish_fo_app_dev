@@ -41,10 +41,9 @@ server <- function(input, output, session) {
     )
   )
 
-  output$headline_bars <- renderPlotly({
-
-    # head(catchScenStk)
-    ggplotly(plot_catchScenStk(data = res_mod()))
+  output$headline_bars <- renderPlot({
+    
+    plot_catchScenStk(data = res_mod())
   })
 
   #### fdi landings map
@@ -136,6 +135,7 @@ server <- function(input, output, session) {
   })
   
 output$fleet_stock_effort_plot <- renderPlotly({
+  
   plot_fleet_stock_effort(df = data_effort_reactive()$fleet_stock_sum, 
                                                           eff = data_effort_reactive()$fleet_sum)
 })
