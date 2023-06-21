@@ -65,6 +65,8 @@ source("plot_map_gear_type.r")
 source("plot_corr_gear_type.r")
 source("plot_corr_species.r")
 source("plot_fleet_stock_effort.R")
+source("effort_by_fleet.r")
+source("plot_effortFltStk_edit.r")
 
 
 # Load data
@@ -156,17 +158,16 @@ tagList(
         tabPanel(
             "MixFishConsiderations",
             tabsetPanel(
-            tabPanel(
+                tabPanel(
                     "Fishing effort",
                     tags$style(type = "text/css", "#fleet_stock_effort_plot {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
                     plotlyOutput("fleet_stock_effort_plot", height = "100%", width = "50%")
-                    ),
-            tabPanel(
+                ),
+                tabPanel(
                     "Spatial landings",
                     sidebarLayout(
                         sidebarPanel(
                             width = 3,
-                            
                             sliderInput(
                                 inputId = "year_range",
                                 label = "Year range:",
@@ -229,17 +230,17 @@ tagList(
                             width = 9,
                             htmlOutput("text"),
                             fluidRow(
-                                    column(5, withSpinner(plotOutput("map_species", width = "100%", height = 600), type = 1, color = "#0275D8")),
-                                    column(5, withSpinner(plotOutput("map_gear_type", width = "100%", height = 600), type = 1, color = "#0275D8"))
-                                ),
+                                column(5, withSpinner(plotOutput("map_species", width = "100%", height = 600), type = 1, color = "#0275D8")),
+                                column(5, withSpinner(plotOutput("map_gear_type", width = "100%", height = 600), type = 1, color = "#0275D8"))
+                            ),
                             fluidRow(
-                                    column(5, withSpinner(plotOutput("corr_species", width = "100%", height = 400), type = 1, color = "#0275D8")),
-                                    column(5, withSpinner(plotOutput("corr_gear_type", width = "100%", height = 400), type = 1, color = "#0275D8"))
-                                )
+                                column(5, withSpinner(plotOutput("corr_species", width = "100%", height = 400), type = 1, color = "#0275D8")),
+                                column(5, withSpinner(plotOutput("corr_gear_type", width = "100%", height = 400), type = 1, color = "#0275D8"))
+                            )
                         )
                     )
-                    )
                 )
+            )
         ),
         tabPanel(
             "MixFishAdvice",
@@ -251,17 +252,17 @@ tagList(
                         params = list(
                             scenario = list(inputId = "scenario", title = "scenario:"),
                             stock = list(inputId = "stock", title = "stock:")
-                            
                         ),
                         inline = TRUE
                     ),
                     tags$style(type = "text/css", "#headline_bars {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
                     plotOutput("headline_bars", height = "100%", width = "100%")
+                ),
+                tabPanel(
+                    "Effort by fleet",
+                    plotlyOutput("plot_effort_by_fleet", height = "auto")
                 )
-                
             )
-        ),
-
-        ######################################################################################################
+        )
     )
 )

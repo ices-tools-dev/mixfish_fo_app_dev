@@ -36,36 +36,7 @@ server <- function(input, output, session) {
   })
 
 
-  ####### headline bar plot
-  data_reactive <- reactive({
-    read.table("Data/catchScenStk.csv")
-    
-  })
-  res_mod <- callModule(
-    module = selectizeGroupServer,
-    id = "my-filters",
-    data = data_reactive(),
-    vars = c(
-      "scenario", "stock"
-    )
-  )
-
-  output$headline_bars <- renderPlot({
-    catchRange <- rbind(
-                data.frame(stock = "COD-NS", advice = 14276, lower = 9701, upper = 14276),
-                data.frame(stock = "HAD", advice = 128708, lower = 111702, upper = 128708),
-                data.frame(stock = "PLE-EC", advice = 6365, lower = 4594, upper = 6365),
-                data.frame(stock = "PLE-NS", advice = 142507, lower = 101854, upper = 195622),
-                data.frame(stock = "POK", advice = 49614, lower = 30204, upper = 49614),
-                data.frame(stock = "SOL-EC", advice = 1810, lower = 1068, upper = 2069),
-                data.frame(stock = "SOL-NS", advice = 15330, lower = 9523, upper = 21805),
-                data.frame(stock = "TUR", advice = 3609, lower = 2634, upper = 4564),
-                data.frame(stock = "WHG-NS", advice = 88426, lower = 70169, upper = 91703),
-                data.frame(stock = "WIT", advice = 1206, lower = 875, upper = 1206)
-)
-    
-    plot_catchScenStk(data = res_mod(), adv = catchRange[,1:2])
-  })
+  
 
   lutPal <- rbind(
       data.frame(pal = "spectral", fun = "brewer.spectral"),
@@ -203,11 +174,73 @@ server <- function(input, output, session) {
     
   output$fleet_stock_effort_plot <- renderPlotly({
     plot_fleet_stock_effort(df = data_effort_reactive()$fleet_stock_sum, eff = data_effort_reactive()$fleet_sum)
+
+
+
 })
 
+####### headline bar plot
+  data_reactive <- reactive({
+    read.table("Data/catchScenStk.csv")
+    
+  })
+  res_mod <- callModule(
+    module = selectizeGroupServer,
+    id = "my-filters",
+    data = data_reactive(),
+    vars = c(
+      "scenario", "stock"
+    )
+  )
+
+  output$headline_bars <- renderPlot({
+    catchRange <- rbind(
+                data.frame(stock = "COD-NS", advice = 14276, lower = 9701, upper = 14276),
+                data.frame(stock = "HAD", advice = 128708, lower = 111702, upper = 128708),
+                data.frame(stock = "PLE-EC", advice = 6365, lower = 4594, upper = 6365),
+                data.frame(stock = "PLE-NS", advice = 142507, lower = 101854, upper = 195622),
+                data.frame(stock = "POK", advice = 49614, lower = 30204, upper = 49614),
+                data.frame(stock = "SOL-EC", advice = 1810, lower = 1068, upper = 2069),
+                data.frame(stock = "SOL-NS", advice = 15330, lower = 9523, upper = 21805),
+                data.frame(stock = "TUR", advice = 3609, lower = 2634, upper = 4564),
+                data.frame(stock = "WHG-NS", advice = 88426, lower = 70169, upper = 91703),
+                data.frame(stock = "WIT", advice = 1206, lower = 875, upper = 1206)
+)
+    
+    plot_catchScenStk(data = res_mod(), adv = catchRange)
+
+
+  })
 
 
 
+
+reactive_refTable <- reactive({
+    read.table("Data/refTable.csv")
+    
+  })
+reactive_effort_by_fleet <- reactive({
+    fleet_stock_sum <- read.table("Data/stfFltStkSum.csv")
+    fleet_sum <- read.table("Data/stfFltSum.csv")
+    refTable <- read.table("Data/refTable.csv")
+    
+    effort_by_fleet(fleet_stock_sum, fleet_sum, refTable)
+    
+  })
+
+  # res_mod <- callModule(
+  #   module = selectizeGroupServer,
+  #   id = "my-filters",
+  #   data = data_reactive(),
+  #   vars = c(
+  #     "scenario", "stock"
+  #   )
+  # )
+
+  output$plot_effort_by_fleet <- renderPlotly({
+    ggplotly(plot_effortFltStk_edit(data = reactive_effort_by_fleet(), refTable = reactive_refTable()) )  
+    # p <- p + theme(text = element_text(size = 12))    
+  })
 
 
 })
