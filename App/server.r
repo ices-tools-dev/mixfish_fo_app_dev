@@ -50,7 +50,7 @@ server <- function(input, output, session) {
     )
   )
 
-  output$headline_bars <- renderPlotly({
+  output$headline_bars <- renderPlot({
     catchRange <- rbind(
                 data.frame(stock = "COD-NS", advice = 14276, lower = 9701, upper = 14276),
                 data.frame(stock = "HAD", advice = 128708, lower = 111702, upper = 128708),
@@ -64,7 +64,7 @@ server <- function(input, output, session) {
                 data.frame(stock = "WIT", advice = 1206, lower = 875, upper = 1206)
 )
     
-    ggplotly(plot_catchScenStk(data = res_mod(), adv = catchRange[,1:2]))
+    plot_catchScenStk(data = res_mod(), adv = catchRange[,1:2])
   })
 
   lutPal <- rbind(
@@ -191,6 +191,25 @@ server <- function(input, output, session) {
   output$corr_gear_type <- renderPlot({
     plot_corr_gear_type(filtered_data_gear_type())
   })
+
+  data_effort_reactive <- reactive({
+      
+      fleet_stock_sum <- read.table("Data/stfFltStkSum.csv")
+      fleet_sum <- read.table("Data/stfFltSum.csv")
+      
+      list(fleet_stock_sum = fleet_stock_sum, 
+          fleet_sum = fleet_sum)
+    })
+    
+  output$fleet_stock_effort_plot <- renderPlotly({
+    plot_fleet_stock_effort(df = data_effort_reactive()$fleet_stock_sum, eff = data_effort_reactive()$fleet_sum)
+})
+
+
+
+
+
+
 })
 
 }

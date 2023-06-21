@@ -64,6 +64,7 @@ source("plot_map_species.r")
 source("plot_map_gear_type.r")
 source("plot_corr_gear_type.r")
 source("plot_corr_species.r")
+source("plot_fleet_stock_effort.R")
 
 
 # Load data
@@ -153,26 +154,14 @@ tagList(
             "FO"
         ),
         tabPanel(
-            "MixFishConsiderations"
-        ),
-        tabPanel(
-            "MixFishAdvice",
+            "MixFishConsiderations",
             tabsetPanel(
-                tabPanel(
-                    "Headline",
-                    selectizeGroupUI(
-                        id = "my-filters",
-                        params = list(
-                            scenario = list(inputId = "scenario", title = "scenario:"),
-                            stock = list(inputId = "stock", title = "stock:")
-                            # indicator = list(inputId = "indicator", title = "indicator:")
-                        ),
-                        inline = TRUE
+            tabPanel(
+                    "Fishing effort",
+                    tags$style(type = "text/css", "#fleet_stock_effort_plot {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
+                    plotlyOutput("fleet_stock_effort_plot", height = "100%", width = "50%")
                     ),
-                    tags$style(type = "text/css", "#headline_bars {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
-                    plotlyOutput("headline_bars", height = "100%", width = "100%")
-                ),
-                tabPanel(
+            tabPanel(
                     "Spatial landings",
                     sidebarLayout(
                         sidebarPanel(
@@ -249,12 +238,27 @@ tagList(
                                 )
                         )
                     )
-                ),
-                tabPanel(
-                    "effort",
-                    tags$style(type = "text/css", "#effort {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
-                    plotlyOutput("effort_plot", height = "100%", width = "100%")
+                    )
                 )
+        ),
+        tabPanel(
+            "MixFishAdvice",
+            tabsetPanel(
+                tabPanel(
+                    "Headline",
+                    selectizeGroupUI(
+                        id = "my-filters",
+                        params = list(
+                            scenario = list(inputId = "scenario", title = "scenario:"),
+                            stock = list(inputId = "stock", title = "stock:")
+                            
+                        ),
+                        inline = TRUE
+                    ),
+                    tags$style(type = "text/css", "#headline_bars {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
+                    plotOutput("headline_bars", height = "100%", width = "100%")
+                )
+                
             )
         ),
 
