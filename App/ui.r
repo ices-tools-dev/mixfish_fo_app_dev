@@ -159,17 +159,15 @@ tagList(
             "MixFishConsiderations",
             tabsetPanel(
                 tabPanel(
-                    sidebarLayout(
-                      "Fishing effort",
-                      sidebarPanel = sidebarPanel(shinyjqui::orderInput("order", 
-                                                                        label = "Drag boxes to determine fleet order",
-                                                                        items = c("Country", "Vessel size", "Gear"), 
-                                                                        item_class = "primary" 
-                      )),
-                      mainPanel = mainPanel(column(width = 9,
-                    tags$style(type = "text/css", "#fleet_stock_effort_plot {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
-                    plotlyOutput("fleet_stock_effort_plot", height = "100%", width = "50%")
-                ))),
+                    "Fishing effort",
+                    sidebarLayout(sidebarPanel = sidebarPanel(shinyjqui::orderInput(inputId = "order",  
+                                                                                    label = "Drag variables to order fleets", 
+                                                                                    items = c("Country", "Gear", "Vessel_length"),
+                                                                                    item_class = "primary"
+                                                                                    )), 
+                                  mainPanel = mainPanel(tags$style(type = "text/css", "#fleet_stock_effort_plot {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
+                                                plotlyOutput("fleet_stock_effort_plot", height = "100%", width = "50%"))
+                )),
                 tabPanel(
                     "Spatial landings",
                     sidebarLayout(
