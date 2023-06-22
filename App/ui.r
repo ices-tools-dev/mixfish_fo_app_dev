@@ -160,9 +160,14 @@ tagList(
             tabsetPanel(
                 tabPanel(
                     "Fishing effort",
-                    tags$style(type = "text/css", "#fleet_stock_effort_plot {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
-                    plotlyOutput("fleet_stock_effort_plot", height = "100%", width = "50%")
-                ),
+                    sidebarLayout(sidebarPanel = sidebarPanel(shinyjqui::orderInput(inputId = "order",  
+                                                                                    label = "Drag variables to order fleets", 
+                                                                                    items = c("Country", "Gear", "Vessel_length"),
+                                                                                    item_class = "primary"
+                                                                                    )), 
+                                  mainPanel = mainPanel(tags$style(type = "text/css", "#fleet_stock_effort_plot {height: calc(99vh - 220px) !important;} overflow-y: hidden;"),
+                                                plotlyOutput("fleet_stock_effort_plot", height = "100%", width = "50%"))
+                )),
                 tabPanel(
                     "Spatial landings",
                     sidebarLayout(
