@@ -21,9 +21,11 @@ app_ui <- function(request) {
                mod_map_selector_ui("map_selector_1")
       ),
       tabPanel(title = "Fishing Effort",
-      mod_fishing_effort_ui("fishing_effort_1"))
- 
-    
+               mod_fishing_effort_ui("fishing_effort_1")),
+      tabPanel(title = "Metier and Fleet Definition",
+                mod_metier_fleet_sankey_ui("metier_fleet_sankey_1")
+               )
+
   )
   )
 }
