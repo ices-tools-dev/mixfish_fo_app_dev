@@ -14,7 +14,7 @@ mod_metier_fleet_sankey_ui <- function(id){
         shiny::sidebarPanel(
           shiny::radioButtons(inputId = ns('sankey_selection'),
                               label = "Select Metier-to-Metier or Metier-to-Fleet",
-                              choices = c("Metier-to-metier" = "metier", "Metier-to-fleet" = "flt", "Metier-to-Metier-to-Fleet" = "metmetflt",
+                              choices = c("Metier-to-metier" = "metier", "Metier-to-fleet" = "flt", "Metier-to-Metier-to-Fleet" = "metmetflt"),
                               selected =  "flt")
         ),
         shiny::mainPanel(ns("sankey"))
