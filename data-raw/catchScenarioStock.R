@@ -2,4 +2,4 @@
 
 catchScenarioStk <- read.table("./dev/App/Data/catchScenStk.csv")
 
-usethis::use_data(catchScenarioStk, overwrite = TRUE)
+usethis::use_data(catchScenStk, overwrite = TRUE)
