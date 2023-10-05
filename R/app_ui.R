@@ -24,8 +24,10 @@ app_ui <- function(request) {
                mod_fishing_effort_ui("fishing_effort_1")),
       tabPanel(title = "Metier and Fleet Definition",
                 mod_metier_fleet_sankey_ui("metier_fleet_sankey_1")
+               ),
+      tabPanel(title = "Spatial Landings",
+                mod_spatial_landings_ui("spatial_landings_1")
                )
-
   )
   )
 }
