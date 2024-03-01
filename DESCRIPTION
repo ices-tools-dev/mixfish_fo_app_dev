@@ -10,12 +10,17 @@ Imports:
     ggplot2,
     golem (>= 0.4.1),
     leaflet,
+    mapplots,
     mixfishtools,
     plotly,
-    shiny (>= 1.7.4)
+    pals,
+    shiny (>= 1.7.4),
+    sf,
+    maps,
+    graphics
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 URL: https://github.com/ices-tools-dev/mixfish_fo_app_dev
 BugReports: https://github.com/ices-tools-dev/mixfish_fo_app_dev/issues
 Depends: 

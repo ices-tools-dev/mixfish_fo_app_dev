@@ -7,7 +7,6 @@
 #' @param advice_year 
 #' @param upper_lim 
 #'
-#' @importFrom nmTest plot_relEffortFltStk
 #' @importFrom plotly ggplotly
 #' 
 compute_fleet_stock_effort <- function(df, eff, advice_year = NULL, upper_lim = 100) {

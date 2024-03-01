@@ -7,6 +7,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @importFrom shinycssloaders withSpinner
 mod_spatial_landings_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -58,7 +59,7 @@ mod_spatial_landings_ui <- function(id){
           multiple = FALSE
         ),
         checkboxInput(inputId = ns("sc"), label = "Scaled landings", value = TRUE),
-        actionButton(inputId = ns("filter_data"), label = "Filter", width = "100%")
+        actionButton(inputId = ns("filter_data"), label = "Update Filter", width = "100%")
         # selectizeGroupUI(
         #     id = "fdi_filters",
         #     params = list(
@@ -73,8 +74,8 @@ mod_spatial_landings_ui <- function(id){
         width = 9,
         htmlOutput(ns("text")),
         fluidRow(
-          column(5, withSpinner(plotOutput(ns("map_species"), width = "100%", height = 600), type = 1, color = "#0275D8")),
-          column(5, withSpinner(plotOutput(ns("map_gear_type"), width = "100%", height = 600), type = 1, color = "#0275D8"))
+          column(5, shinycssloaders::withSpinner(plotOutput(ns("map_species"), width = "100%", height = 600), type = 1, color = "#0275D8")),
+          column(5, shinycssloaders::withSpinner(plotOutput(ns("map_gear_type"), width = "100%", height = 600), type = 1, color = "#0275D8"))
         ),
         fluidRow(
           column(5, withSpinner(plotOutput(ns("corr_species"), width = "100%", height = 400), type = 1, color = "#0275D8")),
@@ -88,6 +89,7 @@ mod_spatial_landings_ui <- function(id){
 #' spatial_landings Server Functions
 #'
 #' @noRd 
+#' @importFrom mapplots ices.rect
 mod_spatial_landings_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
@@ -105,12 +107,15 @@ mod_spatial_landings_server <- function(id){
       unique_species <- unique(filtered_data$species)
       
       # Update the second dropdown choices
-      updateSelectInput(session, "gear_type", choices = unique_gear)
-      updateSelectInput(session, "species", choices = unique_species)
+      updateSelectInput(session, "gear_type", choices = unique_gear, selected = unique_gear[1])
+      updateSelectInput(session, "species", choices = unique_species, selected = unique_species[1])
     })
     
     
     filtered_data <- eventReactive(req(input$filter_data), {
+      validate(
+        need(sum(sapply(list(input$gear_type, input$vessel_length, input$species), FUN = is.null)) ==0, message = "Please select input values for all parameters")
+      )
       #req(input$selected_locations)
     
       dataEco <- fdi_data %>%
@@ -154,10 +159,11 @@ mod_spatial_landings_server <- function(id){
     
     # gear type aggregation ----
     filtered_data_gear_type <- reactive({
-      
+  
       dfsub <- filtered_data()
       
       lutCol <- data.frame(gear_type = sort(unique(filtered_data()$gear_type)))
+      
       lutCol$col <- get_palette_colours(palette = input$pal, plot_variable = filtered_data()$gear_type)
       
       agg1 <- aggregate(totwghtlandg ~ icesname + gear_type, data = dfsub, FUN = sum, na.rm = T)
@@ -190,12 +196,16 @@ mod_spatial_landings_server <- function(id){
     
     # Render corr plot
     output$corr_species <- renderPlot({
+      req(length(input$species) >=2)
+      
       plot_corr_species(filtered_data_species())
-    })
+    }) %>% bindEvent(input$filter_data)
     
     output$corr_gear_type <- renderPlot({
+      req(length(input$gear_type) >=2)
+      
       plot_corr_gear_type(filtered_data_gear_type())
-    })
+    }) %>% bindEvent(input$filter_data)
     
   })
 }

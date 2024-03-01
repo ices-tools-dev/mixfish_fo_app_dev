@@ -7,11 +7,12 @@
 #' @param plot_variable vector. 
 #'
 #' @return a vector of colours, equal in length to the number of unique values in plot_variable
+#' @importFrom pals brewer.spectral brewer.paired cols25 brewer.set1 brewer.set2 brewer.set3
 #'
 
 get_palette_colours <- function(palette, plot_variable){
   
-  stopifnot(length(palette) == 1, "argument 'palette' should be of length 1")
+  stopifnot(length(palette) == 1)
   
   palette_min_lookup <- data.frame(pal = c("spectral", "paired", "cols25", "set1", "set2", "set3"),
                                    fun = c("brewer.spectral", "brewer.paired", "cols25", "brewer.set1", "brewer.set2", "brewer.set3"),
