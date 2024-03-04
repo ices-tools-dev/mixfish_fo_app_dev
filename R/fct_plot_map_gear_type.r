@@ -6,7 +6,7 @@
 #'
 #' @return
 #' @export
-#' @importFrom sf st_bbox #' 
+#' @importFrom sf st_bbox
 #' @importFrom mapplots barplot2D 
 #' @importFrom maps map
 #' @importFrom graphics box legend

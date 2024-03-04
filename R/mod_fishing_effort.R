@@ -11,16 +11,18 @@
 mod_fishing_effort_ui <- function(id){
   ns <- NS(id)
   tagList(
-    textOutput(ns("selected_1")),
-    plotly::plotlyOutput(ns("fleet_stock_effort_plot"), height = "100%", width = "50%")
- 
-  )
+    card(full_screen = T, fill = T, height = "90vh",
+      plotly::plotlyOutput(ns("fleet_stock_effort_plot"), height = "100%")
+         )
+    )
 }
     
 #' fishing_effort Server Functions
 #'
 #' @noRd 
-#' @importFrom plotly ggplotly renderPlotly
+#' @importFrom plotly ggplotly renderPlotly layout
+#' @importFrom mixfishtools plot_relEffortFltStk
+#' 
 mod_fishing_effort_server <- function(id, region){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
@@ -32,30 +34,14 @@ mod_fishing_effort_server <- function(id, region){
            fleet_sum = fleet_sum)
     })
     
+    cdata <- session$clientData
     output$fleet_stock_effort_plot <- renderPlotly({
       
       df <- compute_fleet_stock_effort(df = data_effort_reactive()$fleet_stock_sum, eff = data_effort_reactive()$fleet_sum)
-      mixfishtools::plot_relEffortFltStk(data = df) %>% ggplotly()
+      plot_relEffortFltStk(data = df) %>% 
+        ggplotly() %>% 
+        layout(autosize = TRUE)
     })
-    
-    
-    
-    # advice_year<- 2022 # advice year
-    # reactive_effort_by_fleet <- reactive({
-    #   
-    #   # fleet_stock_sum <- read.table("Data/stfFltStkSum.csv")
-    #   # fleet_sum <- read.table("Data/stfFltSum.csv")
-    #   # refTable <- read.table("Data/refTable.csv")
-    #   
-    #   effort_by_fleet(fleet_stock_sum, fleet_sum, refTable, advYr = advice_year)
-    #   
-    # })
-    # 
-    # output$plot_effort_by_fleet <- renderPlotly({
-    #   ggplotly(plot_effortFltStk_edit(data = reactive_effort_by_fleet(), refTable = reactive_refTable()) )  
-    #   
-    # })
-    
   })
 }
     

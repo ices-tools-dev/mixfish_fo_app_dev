@@ -58,7 +58,7 @@ mod_spatial_landings_ui <- function(id){
           choices = c("spectral", "paired", "cols25", "set1", "set2", "set3"),
           multiple = FALSE
         ),
-        checkboxInput(inputId = ns("sc"), label = "Scaled landings", value = TRUE),
+        checkboxInput(inputId = ns("scaling"), label = "Scaled landings", value = TRUE),
         actionButton(inputId = ns("filter_data"), label = "Update Filter", width = "100%")
         # selectizeGroupUI(
         #     id = "fdi_filters",
@@ -73,13 +73,17 @@ mod_spatial_landings_ui <- function(id){
       mainPanel(
         width = 9,
         htmlOutput(ns("text")),
-        fluidRow(
-          column(5, shinycssloaders::withSpinner(plotOutput(ns("map_species"), width = "100%", height = 600), type = 1, color = "#0275D8")),
-          column(5, shinycssloaders::withSpinner(plotOutput(ns("map_gear_type"), width = "100%", height = 600), type = 1, color = "#0275D8"))
-        ),
-        fluidRow(
-          column(5, withSpinner(plotOutput(ns("corr_species"), width = "100%", height = 400), type = 1, color = "#0275D8")),
-          column(5, withSpinner(plotOutput(ns("corr_gear_type"), width = "100%", height = 400), type = 1, color = "#0275D8"))
+        card(full_screen = T, height = "90vh",
+          layout_column_wrap(width = 1/2, heights_equal = "row", fill = T,
+            card(card_header("Landings: Species"),
+              shinycssloaders::withSpinner(plotOutput(ns("map_species"), height = "35vh"), type = 1, color = "#0275D8"), full_screen = T),
+            card(card_header("Landings: Gear type"),
+                 shinycssloaders::withSpinner(plotOutput(ns("map_gear_type"), height = "35vh", width = "100%"), type = 1, color = "#0275D8"), full_screen = T),
+            card(card_header("Correlation in Landings: Species"),
+                 withSpinner(plotOutput(ns("corr_species"), height = "30vh"), type = 1, color = "#0275D8"), full_screen = T),
+            card(card_header("Correlation in Landings: Gear type"),
+                 withSpinner(plotOutput(ns("corr_gear_type"), height = "30vh"), type = 1, color = "#0275D8"), full_screen = T)
+          )
         )
       )
     )
@@ -150,7 +154,7 @@ mod_spatial_landings_server <- function(id){
       
       agg <- merge(agg1, agg2, all.x = T)
       agg$percLandings <- agg$landings / agg$sumLandings
-      agg$sc <- sqrt(agg$sumLandings/max(agg$sumLandings, na.rm = T))
+      agg$scaling <- sqrt(agg$sumLandings/max(agg$sumLandings, na.rm = T))
       agg <- cbind(agg, ices.rect(rectangle = agg$icesname))
       agg$col <- lutCol$col[match(agg$species, lutCol$species)]
       
@@ -174,7 +178,7 @@ mod_spatial_landings_server <- function(id){
       
       agg <- merge(agg1, agg2, all.x = T)
       agg$percLandings <- agg$landings / agg$sumLandings
-      agg$sc <- sqrt(agg$sumLandings/max(agg$sumLandings, na.rm = T))
+      agg$scaling <- sqrt(agg$sumLandings/max(agg$sumLandings, na.rm = T))
       agg <- cbind(agg, ices.rect(rectangle = agg$icesname))
       agg$col <- lutCol$col[match(agg$gear_type, lutCol$gear_type)]
       agg
@@ -183,29 +187,36 @@ mod_spatial_landings_server <- function(id){
     
     # Render map(s)
     output$map_species <- renderPlot({
-      # plot_map_species(filtered_data_species(), input$sc, input$selected_locations)
-      plot_map_species(filtered_data_species(), input$sc, loc)
+      # plot_map_species(filtered_data_species(), input$scaling, input$selected_locations)
+      plot_map_species(filtered_data_species(), input$scaling, loc)
       
-    })
+    }) %>% 
+      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling) %>% 
+      bindEvent(input$filter_data)
     
     output$map_gear_type <- renderPlot({
-      # plot_map_gear_type(filtered_data_gear_type(), input$sc, input$selected_locations)
-      plot_map_gear_type(filtered_data_gear_type(), input$sc, loc)
-      
-    })
+      # plot_map_gear_type(filtered_data_gear_type(), input$scaling, input$selected_locations)
+      plot_map_gear_type(filtered_data_gear_type(), input$scaling, loc)
+    }) %>% 
+      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling) %>% 
+      bindEvent(input$filter_data)
     
     # Render corr plot
     output$corr_species <- renderPlot({
       req(length(input$species) >=2)
       
       plot_corr_species(filtered_data_species())
-    }) %>% bindEvent(input$filter_data)
+    }) %>% 
+      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling) %>% 
+      bindEvent(input$filter_data)
     
     output$corr_gear_type <- renderPlot({
       req(length(input$gear_type) >=2)
       
       plot_corr_gear_type(filtered_data_gear_type())
-    }) %>% bindEvent(input$filter_data)
+    }) %>% 
+    bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling) %>% 
+      bindEvent(input$filter_data)
     
   })
 }
