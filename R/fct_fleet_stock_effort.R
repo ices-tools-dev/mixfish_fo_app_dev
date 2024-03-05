@@ -7,8 +7,6 @@
 #' @param advice_year 
 #' @param upper_lim 
 #'
-#' @importFrom plotly ggplotly
-#' 
 compute_fleet_stock_effort <- function(df, eff, advice_year = NULL, upper_lim = 100) {
   
   if(is.null(advice_year)){
