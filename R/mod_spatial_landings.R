@@ -76,13 +76,13 @@ mod_spatial_landings_ui <- function(id){
         card(full_screen = T, height = "90vh",
           layout_column_wrap(width = 1/2, heights_equal = "row", fill = T,
             card(card_header("Landings: Species"),
-              shinycssloaders::withSpinner(plotOutput(ns("map_species"), height = "35vh"), type = 1, color = "#0275D8"), full_screen = T),
+              shinycssloaders::withSpinner(plotOutput(ns("map_species"), height = "35vh"), type = 8, color = "#0275D8"), full_screen = T),
             card(card_header("Landings: Gear type"),
-                 shinycssloaders::withSpinner(plotOutput(ns("map_gear_type"), height = "35vh", width = "100%"), type = 1, color = "#0275D8"), full_screen = T),
+                 shinycssloaders::withSpinner(plotOutput(ns("map_gear_type"), height = "35vh", width = "100%"), type = 8, color = "#0275D8"), full_screen = T),
             card(card_header("Correlation in Landings: Species"),
-                 withSpinner(plotOutput(ns("corr_species"), height = "30vh"), type = 1, color = "#0275D8"), full_screen = T),
+                 withSpinner(plotOutput(ns("corr_species"), height = "30vh"), type = 8, color = "#0275D8"), full_screen = T),
             card(card_header("Correlation in Landings: Gear type"),
-                 withSpinner(plotOutput(ns("corr_gear_type"), height = "30vh"), type = 1, color = "#0275D8"), full_screen = T)
+                 withSpinner(plotOutput(ns("corr_gear_type"), height = "30vh"), type = 8, color = "#0275D8"), full_screen = T)
           )
         )
       )
@@ -94,38 +94,33 @@ mod_spatial_landings_ui <- function(id){
 #'
 #' @noRd 
 #' @importFrom mapplots ices.rect
-mod_spatial_landings_server <- function(id){
+mod_spatial_landings_server <- function(id, region){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
  
-    loc <- "Greater North Sea"
     observe({
       
-      # loc <- input$selected_locations
-      
       # Filter data based on selected region
-      filtered_data <- fdi_data[fdi_data$ecoregion == loc, ]
+      filtered_data <- fdi_data[fdi_data$ecoregion == region(), ]
       
       # Get unique values
       unique_gear <- unique(filtered_data$gear_type)
       unique_species <- unique(filtered_data$species)
       
       # Update the second dropdown choices
-      updateSelectInput(session, "gear_type", choices = unique_gear, selected = unique_gear[1])
-      updateSelectInput(session, "species", choices = unique_species, selected = unique_species[1])
+      updateSelectInput(session, "gear_type", choices = unique_gear, selected = unique_gear[1:3])
+      updateSelectInput(session, "species", choices = unique_species, selected = unique_species[1:3])
     })
     
     
-    filtered_data <- eventReactive(req(input$filter_data), {
+    filtered_data <- reactive({
       validate(
         need(sum(sapply(list(input$gear_type, input$vessel_length, input$species), FUN = is.null)) ==0, message = "Please select input values for all parameters")
       )
-      #req(input$selected_locations)
     
       dataEco <- fdi_data %>%
-        dplyr::filter(ecoregion == loc) %>%
+        dplyr::filter(ecoregion == region()) %>%
         mesh_size_extractor(.)
-      
       
       
       dfsub <- subset(dataEco, species %in% input$species & 
@@ -136,7 +131,8 @@ mod_spatial_landings_server <- function(id){
                         year >= input$year_range[1] &
                         year <= input$year_range[2])
       
-    })
+    }) %>% 
+      bindEvent(input$filter_data, region())
     
    
     # species aggregation ----
@@ -187,19 +183,18 @@ mod_spatial_landings_server <- function(id){
     
     # Render map(s)
     output$map_species <- renderPlot({
-      # plot_map_species(filtered_data_species(), input$scaling, input$selected_locations)
-      plot_map_species(filtered_data_species(), input$scaling, loc)
       
+      plot_map_species(filtered_data_species(), input$scaling, region())
     }) %>% 
-      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling) %>% 
-      bindEvent(input$filter_data)
+      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling, region()) %>% 
+      bindEvent(input$filter_data, region())
     
     output$map_gear_type <- renderPlot({
-      # plot_map_gear_type(filtered_data_gear_type(), input$scaling, input$selected_locations)
-      plot_map_gear_type(filtered_data_gear_type(), input$scaling, loc)
+  
+      plot_map_gear_type(filtered_data_gear_type(), input$scaling, region())
     }) %>% 
-      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling) %>% 
-      bindEvent(input$filter_data)
+      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling, region()) %>% 
+      bindEvent(input$filter_data, region())
     
     # Render corr plot
     output$corr_species <- renderPlot({
@@ -207,16 +202,16 @@ mod_spatial_landings_server <- function(id){
       
       plot_corr_species(filtered_data_species())
     }) %>% 
-      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling) %>% 
-      bindEvent(input$filter_data)
+      bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling, region()) %>% 
+      bindEvent(input$filter_data, region())
     
     output$corr_gear_type <- renderPlot({
       req(length(input$gear_type) >=2)
       
       plot_corr_gear_type(filtered_data_gear_type())
     }) %>% 
-    bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling) %>% 
-      bindEvent(input$filter_data)
+    bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling, region()) %>% 
+      bindEvent(input$filter_data, region())
     
   })
 }

@@ -75,6 +75,7 @@ mod_map_selector_server <- function(id){
                  },
                  ignoreNULL = FALSE
                 )
+    return(reactive(selected_1$groups))
   })
 }
 

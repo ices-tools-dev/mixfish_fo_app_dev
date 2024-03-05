@@ -22,6 +22,8 @@ app_ui <- function(request) {
       tabPanel(title = "Region Selection",
                mod_map_selector_ui("map_selector_1")
       ),
+      tabPanel(title = "Projections",
+               mod_Mixfish_projections_ui("Mixfish_projections_1")),
       tabPanel(title = "Fishing Effort",
                mod_fishing_effort_ui("fishing_effort_1")),
       tabPanel(title = "Metier and Fleet Definition",
