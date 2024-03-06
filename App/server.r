@@ -146,7 +146,7 @@ server <- function(input, output, session) {
   # Render map(s)
   output$map_species <- renderPlot({
     plot_map_species(filtered_data_species(), input$sc, input$selected_locations)
-    
+    print(head(filtered_data_species()))
   })
   
   output$map_gear_type <- renderPlot({
