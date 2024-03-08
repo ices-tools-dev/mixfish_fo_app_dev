@@ -59,16 +59,8 @@ mod_spatial_landings_ui <- function(id){
           multiple = FALSE
         ),
         checkboxInput(inputId = ns("scaling"), label = "Scaled landings", value = TRUE),
-        actionButton(inputId = ns("filter_data"), label = "Update Filter", width = "100%")
-        # selectizeGroupUI(
-        #     id = "fdi_filters",
-        #     params = list(
-        #         species = list(inputId = "species", title = "Species:"),
-        #         gear_type = list(inputId = "gear_type", title = "Gear type:"),
-        #         ecoregion = list(inputId = "ecoregion", title = "ecoregion:")
-        #     ),
-        #     inline = TRUE
-        # )
+        actionButton(inputId = ns("filter_data"), label = "Apply filters and Plot", width = "100%")
+ 
       ),
       mainPanel(
         width = 9,

@@ -47,26 +47,48 @@ mod_Mixfish_projections_server <- function(id){
       data = data_reactive(),
       vars = reactive(c("scenario", "stock"))
     )
+    
+    
+    catchRange <- reactiveValues()
+    catchRange$df <- rbind(
+          data.frame(stock = "COD-NS", advice = 14276, lower = 9701, upper = 14276),
+          data.frame(stock = "HAD", advice = 128708, lower = 111702, upper = 128708),
+          data.frame(stock = "PLE-EC", advice = 6365, lower = 4594, upper = 6365),
+          data.frame(stock = "PLE-NS", advice = 142507, lower = 101854, upper = 195622),
+          data.frame(stock = "POK", advice = 49614, lower = 30204, upper = 49614),
+          data.frame(stock = "SOL-EC", advice = 1810, lower = 1068, upper = 2069),
+          data.frame(stock = "SOL-NS", advice = 15330, lower = 9523, upper = 21805),
+          data.frame(stock = "TUR", advice = 3609, lower = 2634, upper = 4564),
+          data.frame(stock = "WHG-NS", advice = 88426, lower = 70169, upper = 91703),
+          data.frame(stock = "WIT", advice = 1206, lower = 875, upper = 1206)
+      )
+    
+    
+    observeEvent(input$`my-filters-stock`, {
+  
+      catchRange$df_filtered <- filter(catchRange$df, stock %in% input$`my-filters-stock`)
+    })
       
+    #   if(is.null(input$`effort-filters-stock`)){
+    #     range_data
+    #   } else {
+    #     range_data <- filter(range_data, stock %in% input$`my-filters-stock`)
+    #   }
+    # }) %>% bindEvent(input$`effort-filters-stock`)
+    
     
     output$headline_bars <- renderPlot({
-      catchRange <- rbind(
-        data.frame(stock = "COD-NS", advice = 14276, lower = 9701, upper = 14276),
-        data.frame(stock = "HAD", advice = 128708, lower = 111702, upper = 128708),
-        data.frame(stock = "PLE-EC", advice = 6365, lower = 4594, upper = 6365),
-        data.frame(stock = "PLE-NS", advice = 142507, lower = 101854, upper = 195622),
-        data.frame(stock = "POK", advice = 49614, lower = 30204, upper = 49614),
-        data.frame(stock = "SOL-EC", advice = 1810, lower = 1068, upper = 2069),
-        data.frame(stock = "SOL-NS", advice = 15330, lower = 9523, upper = 21805),
-        data.frame(stock = "TUR", advice = 3609, lower = 2634, upper = 4564),
-        data.frame(stock = "WHG-NS", advice = 88426, lower = 70169, upper = 91703),
-        data.frame(stock = "WIT", advice = 1206, lower = 875, upper = 1206)
-      )
       
-      plot_catchScenStk(data =  data_filter_module(), adv = catchRange)
+      if(is.null(input$`my-filters-stock`)){
+        plot_catchScenStk(data =  data_filter_module(), adv = catchRange$df)
+        
+      } else {
+        plot_catchScenStk(data =  data_filter_module(), adv = catchRange$df_filtered)
+        
+      }
       
       
-    })
+    }) 
   })
 }
     
