@@ -98,10 +98,12 @@ mod_spatial_landings_server <- function(id, region){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
  
+    
+    
     observe({
-      
       # Filter data based on selected region
       filtered_data <- fdi_data[fdi_data$ecoregion == region(), ]
+      
       
       # Get unique values
       unique_gear <- unique(filtered_data$gear_type)
@@ -115,9 +117,10 @@ mod_spatial_landings_server <- function(id, region){
     
     filtered_data <- reactive({
       validate(
-        need(sum(sapply(list(input$gear_type, input$vessel_length, input$species), FUN = is.null)) ==0, message = "Please select input values for all parameters")
+        need(sum(sapply(list(input$gear_type, input$vessel_length, input$species), FUN = is.null)) ==0, message = "Please select input values for all parameters"),
+        need(reset_plots() ==0, "Please select filters to apply")
       )
-    
+               
       dataEco <- fdi_data %>%
         dplyr::filter(ecoregion == region()) %>%
         mesh_size_extractor(.)
@@ -130,6 +133,7 @@ mod_spatial_landings_server <- function(id, region){
                         mesh_size_max <= input$mesh_range[2] &
                         year >= input$year_range[1] &
                         year <= input$year_range[2])
+
       
     }) %>% 
       bindEvent(input$filter_data, region())
@@ -137,7 +141,9 @@ mod_spatial_landings_server <- function(id, region){
    
     # species aggregation ----
     filtered_data_species <- reactive({
-      
+      validate(
+        need(reset_plots() ==0, "Please select filters to apply")
+      )
       dfsub <- filtered_data()
       lutCol <- data.frame(species = sort(unique(filtered_data()$species)))
       lutCol$col <- get_palette_colours(palette = input$pal, plot_variable = filtered_data()$species)
@@ -155,11 +161,14 @@ mod_spatial_landings_server <- function(id, region){
       agg$col <- lutCol$col[match(agg$species, lutCol$species)]
       
       agg
-    })
+    }) %>% 
+      bindEvent(input$filter_data, region())
     
     # gear type aggregation ----
     filtered_data_gear_type <- reactive({
-  
+      validate(
+        need(reset_plots() ==0, "Please select filters to apply")
+      )
       dfsub <- filtered_data()
       
       lutCol <- data.frame(gear_type = sort(unique(filtered_data()$gear_type)))
@@ -179,17 +188,33 @@ mod_spatial_landings_server <- function(id, region){
       agg$col <- lutCol$col[match(agg$gear_type, lutCol$gear_type)]
       agg
       
+    }) %>% 
+      bindEvent(input$filter_data, region())
+    
+    reset_plots <- reactiveVal(0)
+    
+    observeEvent(input$filter_data,{
+      reset_plots(0)
+                 })
+    
+    observeEvent(region(),{
+      reset_plots(1)
     })
     
     # Render map(s)
     output$map_species <- renderPlot({
-      
+      validate(
+        need(reset_plots() ==0, "Please select filters to apply")
+      )
       plot_map_species(filtered_data_species(), input$scaling, region())
     }) %>% 
       bindCache(input$year_range, input$vessel_length, input$gear_type, input$mesh_range, input$species, input$pal, input$scaling, region()) %>% 
       bindEvent(input$filter_data, region())
     
     output$map_gear_type <- renderPlot({
+      validate(
+      need(reset_plots() ==0, "Please select filters to apply")
+    )
   
       plot_map_gear_type(filtered_data_gear_type(), input$scaling, region())
     }) %>% 
@@ -198,6 +223,9 @@ mod_spatial_landings_server <- function(id, region){
     
     # Render corr plot
     output$corr_species <- renderPlot({
+      validate(
+        need(reset_plots() ==0, "Please select filters to apply")
+      )
       req(length(input$species) >=2)
       
       plot_corr_species(filtered_data_species())
@@ -206,6 +234,9 @@ mod_spatial_landings_server <- function(id, region){
       bindEvent(input$filter_data, region())
     
     output$corr_gear_type <- renderPlot({
+      validate(
+        need(reset_plots() ==0, "Please select filters to apply")
+      )
       req(length(input$gear_type) >=2)
       
       plot_corr_gear_type(filtered_data_gear_type())
