@@ -6,9 +6,9 @@
 #'
 #' @noRd 
 #'
-#' @importFrom shiny NS tagList 
 #' @importFrom datamods select_group_server select_group_ui
 #' @importFrom mixfishtools plot_catchScenStk
+#' @importFrom dplyr filter
 mod_Mixfish_projections_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -69,16 +69,9 @@ mod_Mixfish_projections_server <- function(id){
       catchRange$df_filtered <- filter(catchRange$df, stock %in% input$`my-filters-stock`)
     })
       
-    #   if(is.null(input$`effort-filters-stock`)){
-    #     range_data
-    #   } else {
-    #     range_data <- filter(range_data, stock %in% input$`my-filters-stock`)
-    #   }
-    # }) %>% bindEvent(input$`effort-filters-stock`)
-    
-    
+
     output$headline_bars <- renderPlot({
-      
+
       if(is.null(input$`my-filters-stock`)){
         plot_catchScenStk(data =  data_filter_module(), adv = catchRange$df)
         

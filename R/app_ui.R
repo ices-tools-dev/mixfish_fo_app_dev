@@ -3,7 +3,7 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
-#' @importFrom bslib value_box card card_header card_body layout_column_wrap bs_theme layout_sidebar navset_card_tab nav_panel
+#' @importFrom bslib value_box card card_header card_body layout_column_wrap bs_theme layout_sidebar navset_card_tab nav_panel layout_columns
 #' @noRd
 app_ui <- function(request) {
   tagList(
@@ -18,7 +18,7 @@ app_ui <- function(request) {
         id = "tabset",
         fluid = TRUE,
         title = "MIXFISH",
-        header = div(style = "padding-top: 15px;", selectInput(inputId = "regionSelect", label = NULL, selected = "Irish Sea", 
+        header = div(style = "padding-top: 15px;", selectInput(inputId = "regionSelect", label = NULL, selected = "Greater North Sea", 
                              choices = c("Irish Sea", "Greater North Sea", "Celtic Seas", "Baltic Sea", "Bay of Biscay and the Iberian Coast"))),
       tabPanel(title = "Projections",
                mod_Mixfish_projections_ui("Mixfish_projections_1")),
