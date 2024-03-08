@@ -67,7 +67,7 @@ source("plot_corr_species.r")
 source("plot_fleet_stock_effort.R")
 source("effort_by_fleet.r")
 source("plot_effortFltStk_edit.r")
-
+source("plot_map_species_leaflet.r")
 
 # Load data
 
@@ -231,12 +231,15 @@ tagList(
                             htmlOutput("text"),
                             fluidRow(
                                 column(5, withSpinner(plotOutput("map_species", width = "100%", height = 600), type = 1, color = "#0275D8")),
+                                column(5, withSpinner(leafletOutput("map_species_leaflet", width = "100%", height = 400), type = 1, color = "#0275D8")),
                                 column(5, withSpinner(plotOutput("map_gear_type", width = "100%", height = 600), type = 1, color = "#0275D8"))
                             ),
+                            
                             fluidRow(
                                 column(5, withSpinner(plotOutput("corr_species", width = "100%", height = 400), type = 1, color = "#0275D8")),
                                 column(5, withSpinner(plotOutput("corr_gear_type", width = "100%", height = 400), type = 1, color = "#0275D8"))
                             )
+                            
                         )
                     )
                 )

@@ -146,7 +146,8 @@ server <- function(input, output, session) {
   # Render map(s)
   output$map_species <- renderPlot({
     plot_map_species(filtered_data_species(), input$sc, input$selected_locations)
-    print(head(filtered_data_species()))
+    # print(head(filtered_data_species()))
+    # write.table(filtered_data_species(), "geo_data.csv", sep = ",")
   })
   
   output$map_gear_type <- renderPlot({
@@ -154,6 +155,12 @@ server <- function(input, output, session) {
     
   })
   
+  output$map_species_leaflet <- renderLeaflet({
+      plot_map_species_leaflet(filtered_data_species(),input$selected_locations)
+      # print(head(filtered_data_species()))
+      # write.table(filtered_data_species(), "geo_data.csv", sep = ",")
+    })
+
   # Render corr plot
   output$corr_species <- renderPlot({
     plot_corr_species(filtered_data_species())
