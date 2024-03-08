@@ -12,15 +12,19 @@
 mod_Mixfish_projections_ui <- function(id){
   ns <- NS(id)
   tagList(
-    select_group_ui(
-      id = ns("my-filters"),
-      params = list(
-        scenario = list(inputId = "scenario", "Management Scenario:"),
-        stock = list(inputId = "stock", "Fish Stock"))
-      
-    ),
-    plotOutput(ns("headline_bars"), height = "85vh")
- 
+    card(full_screen = T,
+      card_header("Mixed fisheries projections"),
+      card_body(
+        select_group_ui(
+          id = ns("my-filters"),
+          params = list(
+            scenario = list(inputId = "scenario", "Management Scenario:"),
+            stock = list(inputId = "stock", "Fish Stock"))
+          
+        ),
+        plotOutput(ns("headline_bars"), height = "75vh")
+      )
+    )
   )
 }
     

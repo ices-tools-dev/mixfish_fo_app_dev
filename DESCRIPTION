@@ -5,20 +5,22 @@ Authors@R: person('Neil', 'Maginnis', email = 'neil.maginnis@ices.dk', role = c(
 Description: The mixfishXplorer is an R shiny app to support recipients of mixfish advice. It's purpose is to allow for the user to examine in creater detail ICES mixfish advice. Greater customisation should increase confidence in the basis of ICES mixfish advice.
 License: What license is it under?
 Imports: 
+    bslib,
     config (>= 0.3.1),
     data.table,
+    datamods,
     ggplot2,
     golem (>= 0.4.1),
+    graphics,
     leaflet,
+    maps,
     mapplots,
     mixfishtools,
-    plotly,
     pals,
-    shiny (>= 1.7.4),
+    plotly,
     sf,
-    maps,
-    graphics,
-    bslib
+    shiny (>= 1.7.4),
+    shinycssloaders
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
