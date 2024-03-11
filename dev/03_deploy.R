@@ -39,11 +39,21 @@ golem::add_dockerfile_with_renv()
 golem::add_dockerfile_with_renv_shinyproxy()
 
 
+# update renv.lock file
+deps <- renv::dependencies()
+deps <- deps[!grepl("/dev/", deps$Source) & !grepl("rsconnect", deps$Source), ]
+file <- renv::lockfile_create(packages = unique(deps$Package))
+renv::lockfile_write(file)
+
+# bump description file
+desc::desc_bump_version(which = "dev")
+
+
 # Deploy to Posit Connect or ShinyApps.io
 # In command line.
 rsconnect::deployApp(
   appName = desc::desc_get_field("Package"),
-  appTitle = desc::desc_get_field("Package"),
+  appTitle = "Mixfish Explorer Prototype Tool",
   appFiles = c(
     # Add any additional files unique to your app here.
     "R/",
@@ -51,9 +61,10 @@ rsconnect::deployApp(
     "data/",
     "NAMESPACE",
     "DESCRIPTION",
+    ".Rbuildignore",
     "app.R"
   ),
   appId = rsconnect::deployments(".")$appID,
   lint = FALSE,
-  forceUpdate = TRUE
+  forceUpdate = TRUE, 
 )

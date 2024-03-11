@@ -1,0 +1,10 @@
+name: mixfishXplore
+title: Mixfish Explorer Prototype Tool
+username: ices-tools-dev
+account: ices-tools-dev
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11455736
+bundleId: 8358759
+url: https://ices-tools-dev.shinyapps.io/mixfishXplore/
+version: 1

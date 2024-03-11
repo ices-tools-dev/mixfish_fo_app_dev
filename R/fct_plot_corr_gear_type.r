@@ -7,6 +7,8 @@
 #'
 #' @examples
 #' @importFrom data.table dcast
+#' @importFrom stats cor
+#' @importFrom graphics par
 #' 
 plot_corr_gear_type <- function(filtered_data_gear_type) {
     data2 <- filtered_data_gear_type

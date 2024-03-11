@@ -1,3 +1,13 @@
+#' Title
+#'
+#' @param filtered_data_species 
+#'
+#' @return
+#' @export
+#' @importFrom graphics par
+#' @importFrom stats cor
+#'
+#' @examples
 plot_corr_species <- function(filtered_data_species){
 
     data2 <- filtered_data_species

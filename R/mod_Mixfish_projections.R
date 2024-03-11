@@ -44,8 +44,8 @@ mod_Mixfish_projections_server <- function(id){
     
     data_filter_module <- select_group_server(
       id = "my-filters",
-      data = data_reactive(),
-      vars = reactive(c("scenario", "stock"))
+      data_r = data_reactive(),
+      vars_r = reactive(c("scenario", "stock"))
     )
     
     
@@ -65,7 +65,7 @@ mod_Mixfish_projections_server <- function(id){
     
     
     observeEvent(input$`my-filters-stock`, {
-  
+      
       catchRange$df_filtered <- filter(catchRange$df, stock %in% input$`my-filters-stock`)
     })
       

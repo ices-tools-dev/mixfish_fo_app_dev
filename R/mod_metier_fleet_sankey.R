@@ -7,6 +7,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' @importFrom mixfishtools plot_MetierSankey plot_Metier_2_fleet_Sankey
 mod_metier_fleet_sankey_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -32,9 +33,9 @@ mod_metier_fleet_sankey_server <- function(id){
     
     output$sankey <- renderPlot({
       if (input$sankey_selection == "metier") {
-    plot <- mixfishtools::plot_MetierSankey(Data = accessions) 
+    plot <- plot_MetierSankey(Data = accessions) 
   } else {
-    plot <- mixfishtools::plot_Metier_2_fleet_Sankey(Data = accessions)
+    plot <- plot_Metier_2_fleet_Sankey(Data = accessions)
       
   }
     }

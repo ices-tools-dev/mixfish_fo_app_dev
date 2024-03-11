@@ -24,6 +24,18 @@ matrixIndex <- function(idx = NULL, coord = NULL, dim.mat = NULL){
 }
 
 
+#' Title
+#'
+#' @param z 
+#' @param zlim 
+#' @param col 
+#' @param breaks 
+#'
+#' @return
+#' @export
+#' @importFrom grDevices hcl.colors
+#'
+#' @examples
 val2col<-function(z, zlim, col = hcl.colors(12, "YlOrRd", rev = TRUE), breaks){
   if(!missing(breaks)){
     if(length(breaks) != (length(col)+1)){stop("must have one more break than color")}
@@ -76,6 +88,8 @@ matrixPoly <- function(x, y, z, n=NULL){
 #' @return The return value, if any, from executing the function.
 #'
 #' @noRd
+#' @importFrom graphics image polygon text 
+#' @importFrom grDevices colorRampPalette
 #' 
 imageCor <- function(mat, 
 xlab = NULL, ylab = NULL, xaxisSide = 1, yaxisSide = 2,

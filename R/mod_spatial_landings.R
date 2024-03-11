@@ -8,6 +8,7 @@
 #'
 #' @importFrom shiny NS tagList 
 #' @importFrom shinycssloaders withSpinner
+#' @importFrom stats aggregate cor
 mod_spatial_landings_ui <- function(id){
   ns <- NS(id)
   tagList(

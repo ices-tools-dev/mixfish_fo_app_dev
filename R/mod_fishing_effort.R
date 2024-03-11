@@ -7,6 +7,10 @@
 #' @noRd 
 #'
 #' @importFrom plotly plotlyOutput
+#' @import stats
+#' @import grDevices
+#' @import graphics
+#' 
 mod_fishing_effort_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -62,8 +66,8 @@ mod_fishing_effort_server <- function(id, region){
     
     effort_filter_module <- select_group_server(
       id = "effort-filters",
-      data = fleet_stock_reactive(),
-      vars = reactive(c("fleet", "stock")) 
+      data_r  = fleet_stock_reactive(),
+      vars_r  = reactive(c("fleet", "stock")) 
     )
     
     
